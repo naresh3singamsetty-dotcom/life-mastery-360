@@ -3,10 +3,13 @@ com\lifemastery\security\JwtUtil.class
 com\lifemastery\LifeMastery360Application.class
 com\lifemastery\config\SecurityConfig.class
 com\lifemastery\repository\UserRepository.class
+com\lifemastery\controller\SubscriptionController.class
 com\lifemastery\model\RegisterRequest.class
+com\lifemastery\model\SubscriptionPlan.class
 com\lifemastery\service\ScoreService.class
 com\lifemastery\config\CorsConfig.class
 com\lifemastery\model\LoginRequest.class
+com\lifemastery\controller\AssessmentCatalogController.class
 com\lifemastery\model\AssessmentResult$InterpretationData.class
 com\lifemastery\security\JwtFilter.class
 com\lifemastery\model\User.class
@@ -17,4 +20,5 @@ com\lifemastery\model\AssessmentResult.class
 com\lifemastery\repository\AssessmentRepository.class
 com\lifemastery\controller\AuthController.class
 com\lifemastery\controller\AssessmentController.class
+com\lifemastery\model\SubscriptionRequest.class
 com\lifemastery\security\UserDetailsServiceImpl.class

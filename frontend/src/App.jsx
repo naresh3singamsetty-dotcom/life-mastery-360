@@ -14,6 +14,8 @@ import AssessmentHistoryPage from './pages/AssessmentHistoryPage.jsx'
 import AssessmentTrackerPage from './pages/AssessmentTrackerPage.jsx'
 import IssueTrackerPage from './pages/IssueTrackerPage.jsx'
 import AssessmentCatalogPage from './pages/AssessmentCatalogPage.jsx'
+import GuestAssessmentPage from './pages/GuestAssessmentPage.jsx'
+import GuestResultsPage from './pages/GuestResultsPage.jsx'
 import { AssessmentProvider } from './context/AssessmentContext.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 
@@ -38,6 +40,8 @@ export default function App() {
             <Route path="/details" element={<UserDetailsPage />} />
             <Route path="/question/:number" element={<QuestionPage />} />
             <Route path="/results/:id" element={<ResultsPage />} />
+            <Route path="/guest-assessment" element={<GuestAssessmentPage />} />
+            <Route path="/guest-results/:id" element={<GuestResultsPage />} />
           </Routes>
         </BrowserRouter>
       </AssessmentProvider>

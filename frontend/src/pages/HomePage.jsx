@@ -129,7 +129,7 @@ export default function HomePage() {
 
         {/* Bottom CTA */}
         <div className="home-footer-cta fade-in-3">
-          <button className="btn btn-primary btn-lg" onClick={() => navigate(isAuthenticated && user?.subscriptionPlan ? '/assessments' : isAuthenticated ? '/subscriptions' : '/register')}>
+          <button className="btn btn-primary btn-lg" onClick={() => navigate(isAuthenticated && user?.subscriptionPlan ? '/assessments' : isAuthenticated ? '/subscriptions' : '/guest-assessment')}>
             {isAuthenticated && user?.subscriptionPlan ? 'Browse Assessments →' : isAuthenticated ? 'Choose a Plan →' : 'Get Started →'}
           </button>
           <p className="muted mt-16">{isAuthenticated ? 'Active subscription required' : 'No account required'} · Results in under 5 minutes</p>
