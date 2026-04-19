@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAssessment } from '../context/AssessmentContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const INSTRUCTIONS = [
   { icon: '💭', text: 'Answer based on how you truly feel, not how you want to feel' },
@@ -10,11 +11,22 @@ const INSTRUCTIONS = [
 
 export default function StartAssessmentPage() {
   const navigate = useNavigate()
+  const { user, isAuthenticated } = useAuth()
   const { setAssessmentMode, setClassSegment } = useAssessment()
   const [selectedClass, setSelectedClass] = useState(null)   // '6-8' | '9-12'
   const [selectedMode, setSelectedMode] = useState(null)     // 'quick' | 'full'
-
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login')
+      return
+    }
+    if (!user?.subscriptionPlan) {
+      navigate('/subscriptions')
+      return
+    }
+  }, [isAuthenticated, user?.subscriptionPlan, navigate])
 
   const handleContinue = () => {
     if (!selectedClass && !selectedMode) {

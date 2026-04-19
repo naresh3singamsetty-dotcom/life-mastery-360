@@ -8,10 +8,16 @@ export function AuthProvider({ children }) {
     return stored ? JSON.parse(stored) : null
   })
 
-  const login = (token, name, email) => {
-    const userData = { token, name, email }
+  const login = (token, name, email, userType, subscriptionPlan, subscriptionDuration) => {
+    const userData = { token, name, email, userType, subscriptionPlan, subscriptionDuration }
     localStorage.setItem('lm360_user', JSON.stringify(userData))
     setUser(userData)
+  }
+
+  const updateUser = updates => {
+    const nextUser = { ...user, ...updates }
+    localStorage.setItem('lm360_user', JSON.stringify(nextUser))
+    setUser(nextUser)
   }
 
   const logout = () => {
@@ -20,7 +26,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   )

@@ -6,13 +6,13 @@ import { useAuth } from '../context/AuthContext.jsx'
 export default function LoginPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
-  const [form, setForm] = useState({ email: '', password: '' })
+  const [form, setForm] = useState({ identifier: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.email || !form.password) {
+    if (!form.identifier || !form.password) {
       setError('Please fill in all fields.')
       return
     }
@@ -20,7 +20,7 @@ export default function LoginPage() {
     setLoading(true)
     try {
       const data = await loginApi(form)
-      login(data.token, data.name, data.email)
+      login(data.token, data.name, data.email, data.userType, data.subscriptionPlan, data.subscriptionDuration)
       navigate('/')
     } catch (err) {
       setError(err.response?.data || 'Login failed. Please try again.')
@@ -49,13 +49,13 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label className="form-label">Email *</label>
+              <label className="form-label">Email or Phone *</label>
               <input
-                type="email"
+                type="text"
                 className="form-input"
-                placeholder="you@example.com"
-                value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                placeholder="you@example.com or 9876543210"
+                value={form.identifier}
+                onChange={e => setForm(f => ({ ...f, identifier: e.target.value }))}
                 required
               />
             </div>

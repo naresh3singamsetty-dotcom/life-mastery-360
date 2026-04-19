@@ -6,14 +6,30 @@ import { useAuth } from '../context/AuthContext.jsx'
 export default function RegisterPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    phoneNumber: '',
+    age: '',
+    place: '',
+    userType: 'Individual',
+    schoolName: '',
+    areaName: ''
+  })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.name.trim() || !form.email || !form.password) {
-      setError('Please fill in all fields.')
+    if (!form.firstName.trim() || !form.lastName.trim() || !form.email || !form.password || !form.phoneNumber || !form.age || !form.place) {
+      setError('Please fill in all required fields.')
+      return
+    }
+    if (+form.age < 1 || +form.age > 100) {
+      setError('Age must be between 1 and 100.')
       return
     }
     if (form.password.length < 6) {
@@ -24,11 +40,26 @@ export default function RegisterPage() {
       setError('Passwords do not match.')
       return
     }
+    if (form.userType === 'School' && (!form.schoolName.trim() || !form.areaName.trim())) {
+      setError('School Name and Area Name are required for school users.')
+      return
+    }
     setError('')
     setLoading(true)
     try {
-      const data = await registerApi({ name: form.name, email: form.email, password: form.password })
-      login(data.token, data.name, data.email)
+      const data = await registerApi({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        password: form.password,
+        phoneNumber: form.phoneNumber,
+        age: +form.age,
+        place: form.place,
+        userType: form.userType,
+        schoolName: form.schoolName,
+        areaName: form.areaName
+      })
+      login(data.token, data.name, data.email, data.userType, data.subscriptionPlan, data.subscriptionDuration)
       navigate('/')
     } catch (err) {
       setError(err.response?.data || 'Registration failed. Please try again.')
@@ -57,13 +88,25 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label className="form-label">Full Name *</label>
+              <label className="form-label">First Name *</label>
               <input
                 type="text"
                 className="form-input"
-                placeholder="e.g. Alex Johnson"
-                value={form.name}
-                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                placeholder="e.g. Alex"
+                value={form.firstName}
+                onChange={e => setForm(f => ({ ...f, firstName: e.target.value }))}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Last Name *</label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="e.g. Johnson"
+                value={form.lastName}
+                onChange={e => setForm(f => ({ ...f, lastName: e.target.value }))}
                 required
               />
             </div>
@@ -79,6 +122,89 @@ export default function RegisterPage() {
                 required
               />
             </div>
+
+            <div className="form-group">
+              <label className="form-label">Phone Number *</label>
+              <input
+                type="tel"
+                className="form-input"
+                placeholder="e.g. 9876543210"
+                value={form.phoneNumber}
+                onChange={e => setForm(f => ({ ...f, phoneNumber: e.target.value }))}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Age *</label>
+              <input
+                type="number"
+                className="form-input"
+                placeholder="e.g. 18"
+                value={form.age}
+                min={1}
+                max={100}
+                onChange={e => setForm(f => ({ ...f, age: e.target.value }))}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Place *</label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="e.g. Mumbai"
+                value={form.place}
+                onChange={e => setForm(f => ({ ...f, place: e.target.value }))}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">User Type *</label>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                {['Individual', 'School'].map(option => (
+                  <label key={option} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <input
+                      type="radio"
+                      name="userType"
+                      value={option}
+                      checked={form.userType === option}
+                      onChange={e => setForm(f => ({ ...f, userType: e.target.value }))}
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {form.userType === 'School' && (
+              <>
+                <div className="form-group">
+                  <label className="form-label">School Name *</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="e.g. Harmony High School"
+                    value={form.schoolName}
+                    onChange={e => setForm(f => ({ ...f, schoolName: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Area Name *</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="e.g. Andheri East"
+                    value={form.areaName}
+                    onChange={e => setForm(f => ({ ...f, areaName: e.target.value }))}
+                    required
+                  />
+                </div>
+              </>
+            )}
 
             <div className="form-group">
               <label className="form-label">Password *</label>

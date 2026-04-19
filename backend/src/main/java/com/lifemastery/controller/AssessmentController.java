@@ -5,8 +5,11 @@ import com.lifemastery.model.Assessment;
 import com.lifemastery.model.AssessmentRequest;
 import com.lifemastery.model.AssessmentResult;
 import com.lifemastery.repository.AssessmentRepository;
+import com.lifemastery.repository.UserRepository;
 import com.lifemastery.service.InterpretationService;
 import com.lifemastery.service.ScoreService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/assessment")
@@ -21,6 +26,9 @@ public class AssessmentController {
 
     @Autowired
     private AssessmentRepository repository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ScoreService scoreService;
@@ -57,6 +65,10 @@ public class AssessmentController {
                 interpretationService.interpret(scores, levels, request.getAge(), request.getGender());
 
             Assessment assessment = new Assessment();
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String email = auth.getName();
+            com.lifemastery.model.User user = userRepository.findByEmail(email).orElseThrow();
+            assessment.setUserId(user.getId());
             assessment.setAge(request.getAge());
             assessment.setClassName(request.getClassName());
             assessment.setGender(request.getGender());
@@ -118,6 +130,50 @@ public class AssessmentController {
             result.setInterpretation(interpretation);
 
             return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<AssessmentResult>> getHistory() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String email = auth.getName();
+            com.lifemastery.model.User user = userRepository.findByEmail(email).orElseThrow();
+
+            List<Assessment> assessments = repository.findByUserIdOrderByCreatedAtDesc(user.getId());
+            List<AssessmentResult> results = new ArrayList<>();
+
+            for (Assessment assessment : assessments) {
+                Map<String, Integer> scores = new LinkedHashMap<>();
+                scores.put("stress", assessment.getStressScore());
+                scores.put("focus", assessment.getFocusScore());
+                scores.put("emotionalRegulation", assessment.getEmotionalRegulationScore());
+                scores.put("habitDiscipline", assessment.getHabitDisciplineScore());
+                scores.put("socialConfidence", assessment.getSocialConfidenceScore());
+
+                Map<String, String> levels = new LinkedHashMap<>();
+                scores.forEach((key, value) -> levels.put(key, scoreService.getLevel(value)));
+
+                AssessmentResult.InterpretationData interpretation =
+                    objectMapper.readValue(assessment.getInterpretationJson(), AssessmentResult.InterpretationData.class);
+
+                AssessmentResult result = new AssessmentResult();
+                result.setId(assessment.getId());
+                result.setDate(assessment.getCreatedAt());
+                result.setAge(assessment.getAge());
+                result.setGender(assessment.getGender());
+                result.setScores(scores);
+                result.setLevels(levels);
+                result.setInterpretation(interpretation);
+
+                results.add(result);
+            }
+
+            return ResponseEntity.ok(results);
 
         } catch (Exception e) {
             e.printStackTrace();

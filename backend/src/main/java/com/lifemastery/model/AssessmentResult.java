@@ -1,11 +1,13 @@
 package com.lifemastery.model;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 public class AssessmentResult {
 
     private String id;
+    private LocalDateTime date;
     private Integer age;
     private String gender;
     private Map<String, Integer> scores;
@@ -33,6 +35,9 @@ public class AssessmentResult {
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
+
+    public LocalDateTime getDate() { return date; }
+    public void setDate(LocalDateTime date) { this.date = date; }
 
     public Integer getAge() { return age; }
     public void setAge(Integer age) { this.age = age; }
