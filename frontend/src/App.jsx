@@ -26,8 +26,8 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<HomePage />} />
+            <Route path="/register" element={<HomePage />} />
             <Route path="/subscriptions" element={<SubscriptionPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />

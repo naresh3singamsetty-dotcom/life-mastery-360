@@ -49,16 +49,7 @@ export default function HomePage() {
                     Sign Out
                   </button>
                 </>
-              ) : (
-                <>
-                  <button className="btn btn-outline" style={{ padding: '8px 20px', fontSize: '0.85rem' }} onClick={() => navigate('/login')}>
-                    Sign In
-                  </button>
-                  <button className="btn btn-primary" style={{ padding: '8px 20px', fontSize: '0.85rem' }} onClick={() => navigate('/register')}>
-                    Register
-                  </button>
-                </>
-              )}
+              ) : null}
             </div>
           </div>
         </header>
@@ -75,34 +66,10 @@ export default function HomePage() {
             identify growth areas, and get a personalized wellness plan.
           </p>
           <div className="hero-cta">
-            {isAuthenticated && !user?.subscriptionPlan ? (
-              <button className="btn btn-primary btn-lg" onClick={() => navigate('/subscriptions')}>
-                Choose a Plan →
-              </button>
-            ) : (
-              <button className="btn btn-primary btn-lg" onClick={() => navigate('/assessments')} disabled={!isAuthenticated}>
-                Start MindPulse Assessment →
-              </button>
-            )}
+            <button className="btn btn-primary btn-lg" onClick={() => navigate('/guest-assessment')}>
+              Start MindPulse Assessment →
+            </button>
           </div>
-          {isAuthenticated && (
-            <div className="subscription-banner" style={{ marginTop: 24, textAlign: 'center' }}>
-              <p style={{ marginBottom: 12 }}>
-                {user?.subscriptionPlan ? (
-                  <>
-                    Active plan: <strong>{user.subscriptionPlan} ({user.subscriptionDuration})</strong>
-                  </>
-                ) : (
-                  <>
-                    <strong style={{ color: 'var(--warning)' }}>No active subscription</strong> — Choose a plan to start assessments
-                  </>
-                )}
-              </p>
-              <button className="btn btn-outline" onClick={() => navigate('/subscriptions')}>
-                {user?.subscriptionPlan ? 'Manage your plan' : 'Browse Plans'}
-              </button>
-            </div>
-          )}
           <div className="benefits">
             {BENEFITS.map((b, i) => (
               <div className="benefit-item" key={i}>
@@ -129,10 +96,10 @@ export default function HomePage() {
 
         {/* Bottom CTA */}
         <div className="home-footer-cta fade-in-3">
-          <button className="btn btn-primary btn-lg" onClick={() => navigate(isAuthenticated && user?.subscriptionPlan ? '/assessments' : isAuthenticated ? '/subscriptions' : '/guest-assessment')}>
-            {isAuthenticated && user?.subscriptionPlan ? 'Browse Assessments →' : isAuthenticated ? 'Choose a Plan →' : 'Get Started →'}
+          <button className="btn btn-primary btn-lg" onClick={() => navigate('/guest-assessment')}>
+            Get Started →
           </button>
-          <p className="muted mt-16">{isAuthenticated ? 'Active subscription required' : 'No account required'} · Results in under 5 minutes</p>
+          <p className="muted mt-16">No account required · Results in under 5 minutes</p>
         </div>
       </div>
     </div>
