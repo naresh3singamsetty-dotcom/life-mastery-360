@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { QUESTIONS_6_8, QUESTIONS_9_12, QUICK_INDICES, OPTIONS } from '../data/questions.js'
+import { QUESTIONS_6_8, QUESTIONS_9_12, OPTIONS } from '../data/questions.js'
 import { submitAssessment } from '../api/assessment.js'
 import axios from 'axios'
 
@@ -31,7 +31,7 @@ export default function GuestAssessmentPage() {
     }
     setError('')
     setStep('questions')
-    setAnswers(new Array(5).fill(null)) // Quick scan has 5 questions
+    setAnswers(new Array(30).fill(null)) // Full assessment has 30 questions
   }
 
   const handleAnswerSelect = (answerIdx) => {
@@ -49,14 +49,8 @@ export default function GuestAssessmentPage() {
     setLoading(true)
 
     try {
-      // Map quick scan indices to full assessment answers (5 questions -> 30 answers)
-      const fullAnswers = new Array(30).fill(0)
-      QUICK_INDICES.forEach((idx, i) => {
-        fullAnswers[idx] = answers[i] || 0
-      })
-
       const payload = {
-        answers: fullAnswers,
+        answers: answers,
         age: parseInt(age),
         className: classLevel,
         gender,
@@ -84,13 +78,13 @@ export default function GuestAssessmentPage() {
 
         <div className="assessment-content">
           <div className="assessment-card fade-in" style={{ maxWidth: 560 }}>
-            <span className="assessment-emoji">⚡</span>
-            <h1 className="assessment-title">Quick Wellness Check</h1>
-            <p className="assessment-subtitle">No account required — 5 questions, 1 minute</p>
+            <span className="assessment-emoji">🧠</span>
+            <h1 className="assessment-title">MindPulse AI Assessment</h1>
+            <p className="assessment-subtitle">No account required — 30 questions, 5–10 minutes</p>
 
             <div style={{ backgroundColor: 'var(--bg-subtle)', borderRadius: 12, padding: 20, marginBottom: 24 }}>
               <p style={{ fontSize: '0.95rem', lineHeight: 1.6, color: 'var(--text-muted)' }}>
-                Get instant insights into your mental wellness across key dimensions. Your responses are anonymous and not stored permanently.
+                Get a comprehensive analysis of your mental wellness across five key areas. Your responses are anonymous and not stored permanently.
               </p>
             </div>
 
@@ -197,8 +191,8 @@ export default function GuestAssessmentPage() {
   }
 
   if (step === 'questions') {
-    const question = questions[QUICK_INDICES[currentQuestion]]
-    const progress = ((currentQuestion + 1) / 5) * 100
+    const question = questions[currentQuestion]
+    const progress = ((currentQuestion + 1) / 30) * 100
 
     return (
       <div className="assessment-page">
@@ -214,7 +208,7 @@ export default function GuestAssessmentPage() {
           <div className="assessment-card fade-in" style={{ maxWidth: 560 }}>
             <div style={{ marginBottom: 24 }}>
               <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 8 }}>
-                Question {currentQuestion + 1} of 5
+                Question {currentQuestion + 1} of 30
               </div>
               <div style={{ height: 4, backgroundColor: 'var(--border-color)', borderRadius: 2, overflow: 'hidden' }}>
                 <div
@@ -266,7 +260,7 @@ export default function GuestAssessmentPage() {
               ))}
             </div>
 
-            {currentQuestion === 4 && (
+            {currentQuestion === 29 && (
               <button
                 className="btn btn-primary btn-full"
                 onClick={handleSubmit}
