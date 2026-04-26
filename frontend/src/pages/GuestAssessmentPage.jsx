@@ -255,7 +255,7 @@ export default function GuestAssessmentPage() {
                     }
                   }}
                 >
-                  {option}
+                  {option.label}
                 </button>
               ))}
             </div>
