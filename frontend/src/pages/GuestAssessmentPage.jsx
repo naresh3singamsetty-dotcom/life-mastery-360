@@ -39,7 +39,7 @@ export default function GuestAssessmentPage() {
     newAnswers[currentQuestion] = answerIdx
     setAnswers(newAnswers)
 
-    if (currentQuestion < 4) {
+    if (currentQuestion < 29) {
       setCurrentQuestion(currentQuestion + 1)
     }
   }
