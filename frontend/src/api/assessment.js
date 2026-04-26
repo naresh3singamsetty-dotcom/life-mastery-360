@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-const BASE = '/api/assessment'
+// Use environment variable for API URL, fallback to relative path
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
+const BASE = `${BACKEND_URL}/api/assessment`
 
 export async function submitAssessment(data) {
   const response = await axios.post(`${BASE}/submit`, data)
